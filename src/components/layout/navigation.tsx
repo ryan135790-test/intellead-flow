@@ -6,24 +6,49 @@ import {
   Linkedin, 
   Mail, 
   Megaphone,
-  Sparkles
+  Sparkles,
+  Crown,
+  LogOut,
+  User,
+  Settings,
+  Zap
 } from "lucide-react";
+import { useAuth } from "@/components/auth/auth-provider";
+import { Button } from "@/components/ui/button";
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useNavigate } from "react-router-dom";
 
 interface NavigationProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
 }
 
-const tabs = [
-  { id: "dashboard", label: "Dashboard", icon: BarChart3 },
-  { id: "ai-automation", label: "AI Automation", icon: Bot },
-  { id: "ai-leads", label: "AI Leads", icon: Users },
-  { id: "linkedin", label: "LinkedIn", icon: Linkedin },
-  { id: "email", label: "Email", icon: Mail },
-  { id: "campaigns", label: "Campaigns", icon: Megaphone },
-];
-
 export function Navigation({ activeTab, onTabChange }: NavigationProps) {
+  const { user, profile, isAdmin, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const tabs = [
+    { id: "dashboard", label: "Dashboard", icon: BarChart3 },
+    { id: "ai-automation", label: "AI Automation", icon: Bot },
+    { id: "ai-leads", label: "AI Leads", icon: Users },
+    { id: "ai-builder", label: "AI Builder", icon: Zap },
+    { id: "linkedin", label: "LinkedIn", icon: Linkedin },
+    { id: "email", label: "Email", icon: Mail },
+    { id: "campaigns", label: "Campaigns", icon: Megaphone },
+  ];
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/auth');
+  };
+
   return (
     <div className="w-full border-b bg-card">
       <div className="flex items-center justify-between px-6 py-4">
@@ -56,6 +81,56 @@ export function Navigation({ activeTab, onTabChange }: NavigationProps) {
             );
           })}
         </nav>
+
+        <div className="flex items-center space-x-4">
+          {isAdmin && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate('/admin')}
+              className="flex items-center space-x-2"
+            >
+              <Crown className="h-4 w-4" />
+              <span>Admin</span>
+            </Button>
+          )}
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                <Avatar className="h-8 w-8">
+                  <AvatarFallback>
+                    {profile?.full_name?.charAt(0) || user?.email?.charAt(0) || 'U'}
+                  </AvatarFallback>
+                </Avatar>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56" align="end" forceMount>
+              <div className="flex flex-col space-y-1 p-2">
+                <p className="text-sm font-medium leading-none">
+                  {profile?.full_name || 'User'}
+                </p>
+                <p className="text-xs leading-none text-muted-foreground">
+                  {user?.email}
+                </p>
+              </div>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => navigate('/profile')}>
+                <User className="mr-2 h-4 w-4" />
+                <span>Profile</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/settings')}>
+                <Settings className="mr-2 h-4 w-4" />
+                <span>Settings</span>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handleSignOut}>
+                <LogOut className="mr-2 h-4 w-4" />
+                <span>Log out</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
     </div>
   );

@@ -3,6 +3,7 @@ import { Navigation } from "@/components/layout/navigation";
 import { Overview } from "@/components/dashboard/overview";
 import { AutomationHub } from "@/components/ai/automation-hub";
 import { LeadsDashboard } from "@/components/ai/leads-dashboard";
+import { MultiChannelBuilder } from "@/components/ai/multi-channel-builder";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,8 @@ export default function Platform() {
         return <AutomationHub />;
       case "ai-leads":
         return <LeadsDashboard />;
+      case "ai-builder":
+        return <MultiChannelBuilder />;
       case "linkedin":
         return <LinkedInManagement />;
       case "email":
