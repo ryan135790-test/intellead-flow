@@ -8,6 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Users, Settings, Activity, Database, Crown, User, Calendar } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { LinkedInOAuth } from '@/components/auth/linkedin-oauth';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 interface UserProfile {
   id: string;
@@ -35,6 +37,7 @@ export default function Admin() {
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [aiConfigurations, setAIConfigurations] = useState<AIConfiguration[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showLinkedInConfig, setShowLinkedInConfig] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -380,7 +383,12 @@ export default function Admin() {
                     <p className="text-sm text-muted-foreground mb-4">
                       Configure LinkedIn OAuth settings for secure account connections
                     </p>
-                    <Button variant="outline">Configure LinkedIn OAuth</Button>
+                    <Button 
+                      variant="outline"
+                      onClick={() => setShowLinkedInConfig(true)}
+                    >
+                      Configure LinkedIn OAuth
+                    </Button>
                   </div>
                   
                   <div className="p-4 rounded-lg bg-gradient-card">
@@ -404,6 +412,15 @@ export default function Admin() {
           </TabsContent>
         </Tabs>
       </div>
+
+      <Dialog open={showLinkedInConfig} onOpenChange={setShowLinkedInConfig}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>LinkedIn OAuth Configuration</DialogTitle>
+          </DialogHeader>
+          <LinkedInOAuth />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

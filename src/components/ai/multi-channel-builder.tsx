@@ -26,6 +26,7 @@ import {
   Pause
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { WorkflowEditor } from './workflow-editor';
 
 interface AIConfiguration {
   id: string;
@@ -98,6 +99,7 @@ export function MultiChannelBuilder() {
   const [loading, setLoading] = useState(true);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<string>('');
+  const [editingConfigId, setEditingConfigId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -428,7 +430,11 @@ export function MultiChannelBuilder() {
                         <Play className="h-4 w-4" />
                       )}
                     </Button>
-                    <Button size="sm" variant="outline">
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      onClick={() => setEditingConfigId(config.id)}
+                    >
                       <Edit className="h-4 w-4" />
                     </Button>
                     <Button 
@@ -477,6 +483,15 @@ export function MultiChannelBuilder() {
             </Card>
           ))}
         </div>
+      )}
+
+      {editingConfigId && (
+        <WorkflowEditor
+          configurationId={editingConfigId}
+          isOpen={!!editingConfigId}
+          onClose={() => setEditingConfigId(null)}
+          onSave={fetchConfigurations}
+        />
       )}
     </div>
   );
