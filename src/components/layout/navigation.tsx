@@ -39,6 +39,7 @@ export function Navigation({ activeTab, onTabChange }: NavigationProps) {
     { id: "ai-automation", label: "AI Automation", icon: Bot },
     { id: "ai-leads", label: "AI Leads", icon: Users },
     { id: "ai-builder", label: "AI Builder", icon: Zap },
+    { id: "crm", label: "CRM", icon: Users },
     { id: "linkedin", label: "LinkedIn", icon: Linkedin },
     { id: "email", label: "Email", icon: Mail },
     { id: "campaigns", label: "Campaigns", icon: Megaphone },

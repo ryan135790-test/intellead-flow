@@ -14,6 +14,53 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_chat_sessions: {
+        Row: {
+          context_data: Json | null
+          created_at: string
+          id: string
+          is_active: boolean | null
+          messages: Json
+          result_configuration_id: string | null
+          session_type: string
+          title: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          context_data?: Json | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          messages?: Json
+          result_configuration_id?: string | null
+          session_type: string
+          title?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          context_data?: Json | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          messages?: Json
+          result_configuration_id?: string | null
+          session_type?: string
+          title?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_chat_sessions_result_configuration_id_fkey"
+            columns: ["result_configuration_id"]
+            isOneToOne: false
+            referencedRelation: "ai_configurations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_configurations: {
         Row: {
           channels: string[] | null
@@ -45,6 +92,122 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      contact_interactions: {
+        Row: {
+          channel: string | null
+          completed_at: string | null
+          contact_id: string
+          content: string | null
+          created_at: string
+          id: string
+          outcome: string | null
+          scheduled_for: string | null
+          subject: string | null
+          type: string
+          user_id: string
+        }
+        Insert: {
+          channel?: string | null
+          completed_at?: string | null
+          contact_id: string
+          content?: string | null
+          created_at?: string
+          id?: string
+          outcome?: string | null
+          scheduled_for?: string | null
+          subject?: string | null
+          type: string
+          user_id: string
+        }
+        Update: {
+          channel?: string | null
+          completed_at?: string | null
+          contact_id?: string
+          content?: string | null
+          created_at?: string
+          id?: string
+          outcome?: string | null
+          scheduled_for?: string | null
+          subject?: string | null
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contact_interactions_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contacts: {
+        Row: {
+          company: string | null
+          created_at: string
+          email: string | null
+          first_name: string | null
+          id: string
+          last_contacted: string | null
+          last_name: string | null
+          linkedin_url: string | null
+          next_follow_up: string | null
+          notes: string | null
+          phone: string | null
+          position: string | null
+          score: number | null
+          source: string | null
+          stage: string
+          tags: string[] | null
+          twitter_handle: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string
+          email?: string | null
+          first_name?: string | null
+          id?: string
+          last_contacted?: string | null
+          last_name?: string | null
+          linkedin_url?: string | null
+          next_follow_up?: string | null
+          notes?: string | null
+          phone?: string | null
+          position?: string | null
+          score?: number | null
+          source?: string | null
+          stage?: string
+          tags?: string[] | null
+          twitter_handle?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          company?: string | null
+          created_at?: string
+          email?: string | null
+          first_name?: string | null
+          id?: string
+          last_contacted?: string | null
+          last_name?: string | null
+          linkedin_url?: string | null
+          next_follow_up?: string | null
+          notes?: string | null
+          phone?: string | null
+          position?: string | null
+          score?: number | null
+          source?: string | null
+          stage?: string
+          tags?: string[] | null
+          twitter_handle?: string | null
           updated_at?: string
           user_id?: string
         }

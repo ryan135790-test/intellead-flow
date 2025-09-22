@@ -4,6 +4,8 @@ import { Overview } from "@/components/dashboard/overview";
 import { AutomationHub } from "@/components/ai/automation-hub";
 import { LeadsDashboard } from "@/components/ai/leads-dashboard";
 import { MultiChannelBuilder } from "@/components/ai/multi-channel-builder";
+import { AIChat } from "@/components/ai/ai-chat";
+import { ContactsDashboard } from "@/components/crm/contacts-dashboard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -19,6 +21,8 @@ import {
 
 export default function Platform() {
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [aiChatOpen, setAiChatOpen] = useState(false);
+  const [aiChatType, setAiChatType] = useState<'workflow' | 'campaign' | 'analysis'>('workflow');
 
   const renderContent = () => {
     switch (activeTab) {
@@ -29,13 +33,15 @@ export default function Platform() {
       case "ai-leads":
         return <LeadsDashboard />;
       case "ai-builder":
-        return <MultiChannelBuilder />;
+        return <MultiChannelBuilder onOpenAIChat={(type) => { setAiChatType(type); setAiChatOpen(true); }} />;
+      case "crm":
+        return <ContactsDashboard />;
       case "linkedin":
-        return <LinkedInManagement />;
+        return <LinkedInManagement onOpenAIChat={(type) => { setAiChatType(type); setAiChatOpen(true); }} />;
       case "email":
-        return <EmailManagement />;
+        return <EmailManagement onOpenAIChat={(type) => { setAiChatType(type); setAiChatOpen(true); }} />;
       case "campaigns":
-        return <CampaignManagement />;
+        return <CampaignManagement onOpenAIChat={(type) => { setAiChatType(type); setAiChatOpen(true); }} />;
       default:
         return <Overview />;
     }
@@ -47,11 +53,21 @@ export default function Platform() {
       <main className="p-6">
         {renderContent()}
       </main>
+      
+      <AIChat
+        isOpen={aiChatOpen}
+        onClose={() => setAiChatOpen(false)}
+        sessionType={aiChatType}
+        onComplete={() => {
+          setAiChatOpen(false);
+          // Refresh the active tab if needed
+        }}
+      />
     </div>
   );
 }
 
-function LinkedInManagement() {
+function LinkedInManagement({ onOpenAIChat }: { onOpenAIChat: (type: 'workflow' | 'campaign' | 'analysis') => void }) {
   const templates = [
     {
       name: "Profile Enrichment",
@@ -80,10 +96,16 @@ function LinkedInManagement() {
           <h2 className="text-2xl font-bold text-foreground">LinkedIn AI Campaigns</h2>
           <p className="text-muted-foreground">AI-powered LinkedIn outreach and automation</p>
         </div>
-        <Button className="bg-gradient-primary">
-          <Plus className="h-4 w-4 mr-2" />
-          New Campaign
-        </Button>
+        <div className="flex space-x-2">
+          <Button onClick={() => onOpenAIChat('campaign')} variant="outline">
+            <Bot className="h-4 w-4 mr-2" />
+            AI Campaign Builder
+          </Button>
+          <Button className="bg-gradient-primary">
+            <Plus className="h-4 w-4 mr-2" />
+            New Campaign
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -146,7 +168,7 @@ function LinkedInManagement() {
   );
 }
 
-function EmailManagement() {
+function EmailManagement({ onOpenAIChat }: { onOpenAIChat: (type: 'workflow' | 'campaign' | 'analysis') => void }) {
   const templates = [
     {
       name: "Subject Line Optimization",
@@ -175,10 +197,16 @@ function EmailManagement() {
           <h2 className="text-2xl font-bold text-foreground">Email AI Optimization</h2>
           <p className="text-muted-foreground">AI-powered email marketing and automation</p>
         </div>
-        <Button className="bg-gradient-primary">
-          <Plus className="h-4 w-4 mr-2" />
-          New Email Campaign
-        </Button>
+        <div className="flex space-x-2">
+          <Button onClick={() => onOpenAIChat('workflow')} variant="outline">
+            <Bot className="h-4 w-4 mr-2" />
+            AI Email Builder
+          </Button>
+          <Button className="bg-gradient-primary">
+            <Plus className="h-4 w-4 mr-2" />
+            New Email Campaign
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -245,7 +273,7 @@ function EmailManagement() {
   );
 }
 
-function CampaignManagement() {
+function CampaignManagement({ onOpenAIChat }: { onOpenAIChat: (type: 'workflow' | 'campaign' | 'analysis') => void }) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -253,10 +281,16 @@ function CampaignManagement() {
           <h2 className="text-2xl font-bold text-foreground">Campaign Management</h2>
           <p className="text-muted-foreground">Traditional marketing campaigns with AI insights</p>
         </div>
-        <Button className="bg-gradient-primary">
-          <Plus className="h-4 w-4 mr-2" />
-          Create Campaign
-        </Button>
+        <div className="flex space-x-2">
+          <Button onClick={() => onOpenAIChat('campaign')} variant="outline">
+            <Bot className="h-4 w-4 mr-2" />
+            AI Campaign Builder
+          </Button>
+          <Button className="bg-gradient-primary">
+            <Plus className="h-4 w-4 mr-2" />
+            Create Campaign
+          </Button>
+        </div>
       </div>
 
       <Card>
@@ -271,9 +305,15 @@ function CampaignManagement() {
             <Bot className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
             <h3 className="text-lg font-medium text-foreground mb-2">Enhanced with AI</h3>
             <p className="text-muted-foreground mb-4">Traditional campaigns powered by AI insights for better performance</p>
-            <Button className="bg-gradient-primary">
-              Get Started
-            </Button>
+            <div className="flex space-x-2">
+              <Button onClick={() => onOpenAIChat('analysis')} variant="outline">
+                <Bot className="h-4 w-4 mr-2" />
+                AI Insights
+              </Button>
+              <Button className="bg-gradient-primary">
+                Get Started
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>

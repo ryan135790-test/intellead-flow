@@ -92,7 +92,7 @@ const AI_TEMPLATES = [
   }
 ];
 
-export function MultiChannelBuilder() {
+export function MultiChannelBuilder({ onOpenAIChat }: { onOpenAIChat?: (type: 'workflow' | 'campaign' | 'analysis') => void }) {
   const { user } = useAuth();
   const { toast } = useToast();
   const [configurations, setConfigurations] = useState<AIConfiguration[]>([]);
