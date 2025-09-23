@@ -26,6 +26,7 @@ export type Database = {
           title: string | null
           updated_at: string
           user_id: string
+          workspace_id: string | null
         }
         Insert: {
           context_data?: Json | null
@@ -38,6 +39,7 @@ export type Database = {
           title?: string | null
           updated_at?: string
           user_id: string
+          workspace_id?: string | null
         }
         Update: {
           context_data?: Json | null
@@ -50,6 +52,7 @@ export type Database = {
           title?: string | null
           updated_at?: string
           user_id?: string
+          workspace_id?: string | null
         }
         Relationships: [
           {
@@ -57,6 +60,13 @@ export type Database = {
             columns: ["result_configuration_id"]
             isOneToOne: false
             referencedRelation: "ai_configurations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_ai_chat_workspace"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
             referencedColumns: ["id"]
           },
         ]
@@ -72,6 +82,7 @@ export type Database = {
           name: string
           updated_at: string
           user_id: string
+          workspace_id: string | null
         }
         Insert: {
           channels?: string[] | null
@@ -83,6 +94,7 @@ export type Database = {
           name: string
           updated_at?: string
           user_id: string
+          workspace_id?: string | null
         }
         Update: {
           channels?: string[] | null
@@ -94,8 +106,17 @@ export type Database = {
           name?: string
           updated_at?: string
           user_id?: string
+          workspace_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "fk_ai_config_workspace"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       contact_interactions: {
         Row: {
@@ -168,6 +189,7 @@ export type Database = {
           twitter_handle: string | null
           updated_at: string
           user_id: string
+          workspace_id: string | null
         }
         Insert: {
           company?: string | null
@@ -189,6 +211,7 @@ export type Database = {
           twitter_handle?: string | null
           updated_at?: string
           user_id: string
+          workspace_id?: string | null
         }
         Update: {
           company?: string | null
@@ -210,8 +233,17 @@ export type Database = {
           twitter_handle?: string | null
           updated_at?: string
           user_id?: string
+          workspace_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "fk_contact_workspace"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       linkedin_connections: {
         Row: {
@@ -302,6 +334,50 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      workspaces: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean | null
+          linkedin_connection_id: string | null
+          name: string
+          settings: Json | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          linkedin_connection_id?: string | null
+          name: string
+          settings?: Json | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          linkedin_connection_id?: string | null
+          name?: string
+          settings?: Json | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_workspace_linkedin_connection"
+            columns: ["linkedin_connection_id"]
+            isOneToOne: false
+            referencedRelation: "linkedin_connections"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
