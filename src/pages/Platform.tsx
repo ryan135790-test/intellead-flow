@@ -9,6 +9,7 @@ import { ContactsDashboard } from "@/components/crm/contacts-dashboard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { LinkedInOAuth } from "@/components/auth/linkedin-oauth";
 import { 
   Linkedin, 
   Mail, 
@@ -93,8 +94,8 @@ function LinkedInManagement({ onOpenAIChat }: { onOpenAIChat: (type: 'workflow' 
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-foreground">LinkedIn AI Campaigns</h2>
-          <p className="text-muted-foreground">AI-powered LinkedIn outreach and automation</p>
+          <h2 className="text-2xl font-bold text-foreground">LinkedIn Integration</h2>
+          <p className="text-muted-foreground">Connect your LinkedIn account to enable AI-powered outreach</p>
         </div>
         <div className="flex space-x-2">
           <Button onClick={() => onOpenAIChat('campaign')} variant="outline">
@@ -107,6 +108,19 @@ function LinkedInManagement({ onOpenAIChat }: { onOpenAIChat: (type: 'workflow' 
           </Button>
         </div>
       </div>
+
+      {/* LinkedIn OAuth Connection */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <Linkedin className="h-5 w-5 text-primary" />
+            <span>LinkedIn Connection</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <LinkedInOAuth />
+        </CardContent>
+      </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {templates.map((template, index) => (
