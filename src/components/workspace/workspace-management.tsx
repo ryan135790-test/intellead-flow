@@ -13,11 +13,10 @@ import { LinkedInOAuth } from '@/components/auth/linkedin-oauth';
 interface Workspace {
   id: string;
   name: string;
-  linkedin_profile_id: string;
-  linkedin_profile_name: string;
-  linkedin_profile_email: string;
-  linkedin_profile_picture?: string;
-  linkedin_token_expires_at: string;
+  description?: string;
+  linkedin_connection_id?: string;
+  is_active: boolean;
+  settings: any;
   created_at: string;
   updated_at: string;
 }
@@ -105,9 +104,6 @@ export function WorkspaceManagement() {
     }
   };
 
-  const isTokenExpired = (expiresAt: string) => {
-    return new Date(expiresAt) < new Date();
-  };
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString();
@@ -144,16 +140,7 @@ export function WorkspaceManagement() {
                 Connect a new LinkedIn account to create a workspace for lead management
               </DialogDescription>
             </DialogHeader>
-            <LinkedInOAuth 
-              onSuccess={() => {
-                setShowAddDialog(false);
-                fetchWorkspaces();
-                toast({
-                  title: 'Success',
-                  description: 'LinkedIn account connected successfully',
-                });
-              }}
-            />
+            <LinkedInOAuth />
           </DialogContent>
         </Dialog>
       </div>
@@ -188,15 +175,14 @@ export function WorkspaceManagement() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <Avatar className="w-10 h-10">
-                      <AvatarImage src={workspace.linkedin_profile_picture} />
                       <AvatarFallback>
-                        {workspace.linkedin_profile_name?.split(' ').map(n => n[0]).join('') || 'LI'}
+                        {workspace.name?.split(' ').map(n => n[0]).join('').slice(0, 2) || 'WS'}
                       </AvatarFallback>
                     </Avatar>
                     <div>
                       <CardTitle className="text-base">{workspace.name}</CardTitle>
                       <CardDescription className="text-sm">
-                        {workspace.linkedin_profile_email}
+                        {workspace.description || 'LinkedIn workspace'}
                       </CardDescription>
                     </div>
                   </div>
@@ -219,18 +205,17 @@ export function WorkspaceManagement() {
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Status:</span>
                     <Badge 
-                      variant={isTokenExpired(workspace.linkedin_token_expires_at) ? 'destructive' : 'default'}
+                      variant={workspace.is_active ? 'default' : 'secondary'}
                     >
-                      {isTokenExpired(workspace.linkedin_token_expires_at) ? 'Expired' : 'Active'}
+                      {workspace.is_active ? 'Active' : 'Inactive'}
                     </Badge>
                   </div>
                   
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Token Expires:</span>
-                    <span className="flex items-center">
-                      <Calendar className="w-3 h-3 mr-1" />
-                      {formatDate(workspace.linkedin_token_expires_at)}
-                    </span>
+                    <span className="text-muted-foreground">LinkedIn:</span>
+                    <Badge variant={workspace.linkedin_connection_id ? 'default' : 'secondary'}>
+                      {workspace.linkedin_connection_id ? 'Connected' : 'Not Connected'}
+                    </Badge>
                   </div>
                   
                   <div className="flex items-center justify-between text-sm">

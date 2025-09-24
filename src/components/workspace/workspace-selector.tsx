@@ -10,9 +10,9 @@ import { useToast } from '@/hooks/use-toast';
 interface Workspace {
   id: string;
   name: string;
-  linkedin_profile_name: string;
-  linkedin_profile_picture?: string;
-  linkedin_token_expires_at: string;
+  description?: string;
+  linkedin_connection_id?: string;
+  is_active: boolean;
 }
 
 interface WorkspaceSelectorProps {
@@ -38,7 +38,7 @@ export function WorkspaceSelector({ onWorkspaceChange, className }: WorkspaceSel
     try {
       const { data, error } = await supabase
         .from('workspaces')
-        .select('id, name, linkedin_profile_name, linkedin_profile_picture, linkedin_token_expires_at')
+        .select('id, name, description, linkedin_connection_id, is_active')
         .eq('user_id', user?.id)
         .order('created_at', { ascending: false });
 
@@ -70,9 +70,6 @@ export function WorkspaceSelector({ onWorkspaceChange, className }: WorkspaceSel
     onWorkspaceChange?.(workspaceId);
   };
 
-  const isTokenExpired = (expiresAt: string) => {
-    return new Date(expiresAt) < new Date();
-  };
 
   if (loading) {
     return (
@@ -100,12 +97,9 @@ export function WorkspaceSelector({ onWorkspaceChange, className }: WorkspaceSel
             {selectedWorkspace && (
               <div className="flex items-center space-x-2">
                 <Avatar className="w-6 h-6">
-                  <AvatarImage 
-                    src={workspaces.find(w => w.id === selectedWorkspace)?.linkedin_profile_picture} 
-                  />
                   <AvatarFallback className="text-xs">
-                    {workspaces.find(w => w.id === selectedWorkspace)?.linkedin_profile_name
-                      ?.split(' ').map(n => n[0]).join('') || 'WS'}
+                    {workspaces.find(w => w.id === selectedWorkspace)?.name
+                      ?.split(' ').map(n => n[0]).join('').slice(0, 2) || 'WS'}
                   </AvatarFallback>
                 </Avatar>
                 <span className="truncate">
@@ -121,23 +115,22 @@ export function WorkspaceSelector({ onWorkspaceChange, className }: WorkspaceSel
               <div className="flex items-center justify-between w-full">
                 <div className="flex items-center space-x-2">
                   <Avatar className="w-6 h-6">
-                    <AvatarImage src={workspace.linkedin_profile_picture} />
                     <AvatarFallback className="text-xs">
-                      {workspace.linkedin_profile_name?.split(' ').map(n => n[0]).join('') || 'WS'}
+                      {workspace.name?.split(' ').map(n => n[0]).join('').slice(0, 2) || 'WS'}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col">
                     <span className="truncate">{workspace.name}</span>
                     <span className="text-xs text-muted-foreground">
-                      {workspace.linkedin_profile_name}
+                      {workspace.description || 'LinkedIn workspace'}
                     </span>
                   </div>
                 </div>
                 <Badge 
-                  variant={isTokenExpired(workspace.linkedin_token_expires_at) ? 'destructive' : 'secondary'}
+                  variant={workspace.is_active ? 'default' : 'secondary'}
                   className="text-xs"
                 >
-                  {isTokenExpired(workspace.linkedin_token_expires_at) ? 'Expired' : 'Active'}
+                  {workspace.is_active ? 'Active' : 'Inactive'}
                 </Badge>
               </div>
             </SelectItem>
