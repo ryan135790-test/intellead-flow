@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Platform from "./pages/Platform";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
+import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import { AuthProvider, useAuth } from "./components/auth/auth-provider";
 import { ProtectedRoute } from "./components/auth/protected-route";
@@ -49,6 +50,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute requireAdmin>
             <Admin />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/profile" 
+        element={
+          <ProtectedRoute>
+            <Profile />
           </ProtectedRoute>
         } 
       />
